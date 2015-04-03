@@ -13,28 +13,25 @@ const size_t k_quit = 4;
 
 int loadFile(const string &filename, std::vector<Interaction> &data){
     std::fstream fileReader;
-    fileReader.open(filename,std::ios::in);
+    fileReader.open(filename.c_str(),std::ios::in);
     try{
         if(!fileReader.is_open()){
             throw "unable to open file\n";
         }
     }catch(char *msg){
-        std::cout<<"failed to open file\n";
+        std::cout<<msg;
         std::cout.flush();
         return -1;
     }
 
     std::string strLineBuffer;
-//    while(std::getline(fileReader, strLineBuffer)){
-//        std::istringstream buffer(strLineBuffer);
-//        float fTmp;
-//        std::vector<size_t> line;
-//        while(buffer>>fTmp){
-//            line.push_back(fTmp);
-//        }
-
-//        data.push_back(line);
-//    }
+    std::istringstream buffer;
+    while(std::getline(fileReader, strLineBuffer)){
+        buffer.str(strLineBuffer);
+        Interaction interaction(buffer);
+        data.push_back(interaction);
+    }
+    return 0;
 }
 
 void parseCommand(std::vector<std::vector<size_t> > &cmdList){
@@ -50,6 +47,7 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
                 size_t param;
                 cin>>param;
                 cmdParam.push_back(param);
+                --paramCnt;
             }
 
         }else if(!cmd.compare("clicked")){
@@ -59,6 +57,7 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
                 size_t param;
                 cin>>param;
                 cmdParam.push_back(param);
+                --paramCnt;
             }
         }else if(!cmd.compare("impressed")){
             cmdParam.push_back(k_impressed);
@@ -67,6 +66,7 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
                 size_t param;
                 cin>>param;
                 cmdParam.push_back(param);
+                --paramCnt;
             }
         }else if(!cmd.compare("profit")){
             cmdParam.push_back(k_profit);
@@ -75,6 +75,7 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
                 size_t param;
                 cin>>param;
                 cmdParam.push_back(param);
+                --paramCnt;
             }
         }else if(!cmd.compare("quit")){
             break;
@@ -96,14 +97,15 @@ int main(int argc, char *argv[], char *envp[])
 {
     std::string strFileAddress(argv[1]);
     std::vector<Interaction> dataBuffer;
-    dataBuffer.reserve(100000);
+    dataBuffer.reserve(1000000);
 
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
     if(loadFile(strFileAddress, dataBuffer)){
-
         return -1;
     }
+
+
 
 
     std::vector<std::vector<size_t> > cmdList;

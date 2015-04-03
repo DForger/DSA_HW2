@@ -12,7 +12,7 @@ struct Interaction
 public:
     Interaction();
 
-    Interaction(const std::istringstream &ss);
+    Interaction( std::istringstream &ss);
 
     ~Interaction();
 

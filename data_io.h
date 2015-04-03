@@ -11,7 +11,7 @@ void readText_(std::vector<std::vector<DataType> > &data, std::string filename){
     data.clear();
     {
         std::fstream fileReader;
-        fileReader.open(filename,std::ios::in);
+        fileReader.open(filename.c_str(),std::ios::in);
 
         if(!fileReader.is_open()){
             return;

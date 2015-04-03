@@ -5,11 +5,19 @@ Interaction::Interaction()
 
 }
 
-Interaction::Interaction(const istringstream &ss)
+Interaction::Interaction( istringstream &ss)
 {
-    ss>>click;
-    ss>>impression;
-    ss>>adID;
+    ss >> click;
+    ss >> impression;
+    ss >> displayURL;
+    ss >> adID;
+    ss >> advertiserID;
+    ss >> depth;
+    ss >> position;
+    ss >> queryID;
+    ss >> titleID;
+    ss >> descriptionID;
+    ss >> userID;
 
 }
 
