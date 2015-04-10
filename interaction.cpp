@@ -15,6 +15,7 @@ Interaction::Interaction( istringstream &ss)
     ss >> depth;
     ss >> position;
     ss >> queryID;
+    ss >> keywordID;
     ss >> titleID;
     ss >> descriptionID;
     ss >> userID;

@@ -1,6 +1,11 @@
 #include <iostream>
+#include <map>
+#include <set>
+#include <utility>
+#include <algorithm>
 #include "data_io.h"
 #include "interaction.h"
+#include "retrieval_method.h"
 
 using namespace std;
 
@@ -11,7 +16,10 @@ const size_t k_impressed = 2;
 const size_t k_profit = 3;
 const size_t k_quit = 4;
 
-int loadFile(const string &filename, std::vector<Interaction> &data){
+int loadFile(const string &filename,
+             std::vector<Interaction> &vecInteractions,
+             std::multimap<size_t, size_t> &mapUserID2Index,
+             std::multimap<size_t, size_t> &mapAdID2Index){
     std::fstream fileReader;
     fileReader.open(filename.c_str(),std::ios::in);
     try{
@@ -25,11 +33,16 @@ int loadFile(const string &filename, std::vector<Interaction> &data){
     }
 
     std::string strLineBuffer;
-    std::istringstream buffer;
+
+    size_t nCnt = 0;
     while(std::getline(fileReader, strLineBuffer)){
+        std::istringstream buffer;
         buffer.str(strLineBuffer);
         Interaction interaction(buffer);
-        data.push_back(interaction);
+        vecInteractions.push_back(interaction);
+        mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
+        mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
+        ++nCnt;
     }
     return 0;
 }
@@ -93,23 +106,37 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
     }
 }
 
+
+
+
+void run(std::vector<std::vector<size_t> > &cmdList){
+
+}
+
 int main(int argc, char *argv[], char *envp[])
 {
     std::string strFileAddress(argv[1]);
-    std::vector<Interaction> dataBuffer;
-    dataBuffer.reserve(1000000);
+    std::vector<Interaction> vecTotalInteractions;
+    std::multimap<size_t, size_t> mapUserID2Index;
+    std::multimap<size_t, size_t> mapAdID2Index;
+    vecTotalInteractions.reserve(1000000);
 
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
-    if(loadFile(strFileAddress, dataBuffer)){
+    if(loadFile(strFileAddress, vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
         return -1;
     }
+    std::pair<size_t, size_t> clickImpressionPair;
+    std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
+    std::vector<Interaction> vecRetrievalInteractions;
 
-
-
-
+//    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,8232973,21353949,27,2,3,clickImpressionPair);//8232973
+    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
+    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+    RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+    std::cout.flush();
     std::vector<std::vector<size_t> > cmdList;
-    parseCommand(cmdList);
+//    parseCommand(cmdList);
 
     return 0;
 }

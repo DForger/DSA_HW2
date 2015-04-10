@@ -16,17 +16,33 @@ public:
 
     ~Interaction();
 
+    Interaction& operator=(const Interaction &rhs){
+        this->click = rhs.click;
+        this->impression = rhs.impression;
+        this->displayURL = rhs.displayURL;
+        this->adID = rhs.adID;
+        this->advertiserID = rhs.advertiserID;
+        this->depth = rhs.depth;
+        this->position = rhs.position;
+        this->queryID = rhs.queryID;
+        this->keywordID = rhs.keywordID;
+        this->titleID = rhs.titleID;
+        this->descriptionID = rhs.descriptionID;
+        this->userID = rhs.userID;
+    }
+
     //data member
-    size_t click;
-    size_t impression;
+    short click;
+    short impression;
     string displayURL;
     unsigned long adID;
     unsigned long advertiserID;
-    size_t depth;
-    size_t position;
-    unsigned long queryID;
+    short depth;
+    short position;
+    size_t queryID;
+    size_t keywordID;
     unsigned long titleID;
-    unsigned long descriptionID;
+    size_t descriptionID;
     unsigned long userID;
 
 };
