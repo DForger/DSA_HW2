@@ -14,76 +14,49 @@ public:
 
     Interaction( std::istringstream &ss);
 
+    Interaction(char *start, char *end);
+
     ~Interaction();
 
-    Interaction& operator=(const Interaction &rhs){
-        this->click = rhs.click;
-        this->impression = rhs.impression;
-        this->displayURL = rhs.displayURL;
-        this->adID = rhs.adID;
-        this->advertiserID = rhs.advertiserID;
-        this->depth = rhs.depth;
-        this->position = rhs.position;
-        this->queryID = rhs.queryID;
-        this->keywordID = rhs.keywordID;
-        this->titleID = rhs.titleID;
-        this->descriptionID = rhs.descriptionID;
-        this->userID = rhs.userID;
+    Interaction& operator=(const Interaction &rhs);
+
+    bool operator==(const Interaction &rhs);
+
+    void init(char *start, char *end);
+
+    inline size_t str2num(char *start, char *end){
+        char *ptr = start;
+        size_t value = 0;
+        while(ptr != end){
+            value = value*10 +(*ptr - '0');
+            ++ptr;
+        }
+        return value;
     }
 
-    bool operator==(const Interaction &rhs){
-        if(this->click != rhs.click){
-            return false;
+    inline size_t str2num(const char *start, int length){
+        size_t value = 0;
+        int nCnt = 0;
+        while(nCnt < length){
+            value = value*10 + (start[nCnt] - '0');
+            ++nCnt;
         }
-        if(this->impression != rhs.impression){
-            return false;
-        }
-        if(this->adID != rhs.adID){
-            return false;
-        }
-        if(this->advertiserID != rhs.advertiserID){
-            return false;
-        }
-        if(this->depth != rhs.depth){
-            return false;
-        }
-        if(this->position != rhs.position){
-            return false;
-        }
-        if(this->queryID != rhs.queryID){
-            return false;
-        }
-        if(this->keywordID != rhs.keywordID){
-            return false;
-        }
-        if(this->titleID != rhs.titleID){
-            return false;
-        }
-        if(this->descriptionID != rhs.descriptionID){
-            return false;
-        }
-        if(this->userID != rhs.userID){
-            return false;
-        }
-        if(this->displayURL != rhs.displayURL){
-            return false;
-        }
-        return true;
+        return value;
     }
 
     //data member
     short click;
     short impression;
     string displayURL;
-    unsigned long adID;
-    unsigned long advertiserID;
+    size_t adID;
+    size_t advertiserID;
     short depth;
     short position;
     size_t queryID;
     size_t keywordID;
-    unsigned long titleID;
+    size_t titleID;
     size_t descriptionID;
-    unsigned long userID;
+    size_t userID;
 
 };
 

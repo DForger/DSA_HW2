@@ -22,7 +22,7 @@ const size_t k_clicked = 1;
 const size_t k_impressed = 2;
 const size_t k_profit = 3;
 const size_t k_quit = 4;
-
+const size_t k_totalLineNum = 149639105;
 //int loadFile(const string &filename,
 //             std::vector<Interaction> &vecInteractions,
 //             std::multimap<size_t, size_t> &mapUserID2Index,
@@ -90,7 +90,7 @@ int loadFile(const string &filename,
         ++nCnt;
         if(nCnt%100000 == 0){
             t2 = time(NULL);
-            std::cout << nCnt << " lines loaded. used time " << t2-t1 << "sec \n";
+            std::cout << (double)nCnt/k_totalLineNum << "% lines loaded. used time " << t2-t1 << "sec \n";
             std::cout.flush();
         }
     }
@@ -152,35 +152,30 @@ int readFile(const string &filename,
     size_t nChrCnt = 0;
     while(1){
         int nEndPos = 0;
-        while(nChrCnt < size){
-            if(ptr[nEndPos] != '\n'){
-                ++nEndPos;
-                ++nChrCnt;
-            }else{
-                break;
-            }
+        while((nChrCnt < size) && (ptr[nEndPos] != '\n')){
+            ++nEndPos;
+            ++nChrCnt;
         }
 
-        string strLineBuffer(ptr, ptr+nEndPos);
-        std::istringstream buffer;
-        buffer.str(strLineBuffer);
-        Interaction interaction(buffer);
+
+        Interaction interaction(ptr, ptr+nEndPos);
         vecInteractions.push_back(interaction);
         mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
         mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
         ++nCnt;
         if(nCnt%100000 == 0){
             t2 = time(NULL);
-            std::cout << nCnt << " lines loaded. used time " << t2-t1 << "sec \n";
+            std::cout << (double)nCnt*100/k_totalLineNum << "% loaded. used time " << t2-t1 << "sec \n";
             std::cout.flush();
         }
 
-
+        ++nEndPos;
         ++nChrCnt;
+
         if(nChrCnt >= size){
             break;
         }
-        ptr = ptr + nEndPos + 1;
+        ptr = ptr + nEndPos;
     }
 
     t2 = time(NULL);
@@ -260,7 +255,6 @@ int main(int argc, char *argv[], char *envp[])
 {
     std::string strFileAddress(argv[1]);
     std::vector<Interaction> vecTotalInteractions;
-    std::vector<Interaction> vecTotalInteractions2;
     std::multimap<size_t, size_t> mapUserID2Index;
     std::multimap<size_t, size_t> mapAdID2Index;
     vecTotalInteractions.reserve(50000000);
