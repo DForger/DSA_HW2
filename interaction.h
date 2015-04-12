@@ -31,6 +31,46 @@ public:
         this->userID = rhs.userID;
     }
 
+    bool operator==(const Interaction &rhs){
+        if(this->click != rhs.click){
+            return false;
+        }
+        if(this->impression != rhs.impression){
+            return false;
+        }
+        if(this->adID != rhs.adID){
+            return false;
+        }
+        if(this->advertiserID != rhs.advertiserID){
+            return false;
+        }
+        if(this->depth != rhs.depth){
+            return false;
+        }
+        if(this->position != rhs.position){
+            return false;
+        }
+        if(this->queryID != rhs.queryID){
+            return false;
+        }
+        if(this->keywordID != rhs.keywordID){
+            return false;
+        }
+        if(this->titleID != rhs.titleID){
+            return false;
+        }
+        if(this->descriptionID != rhs.descriptionID){
+            return false;
+        }
+        if(this->userID != rhs.userID){
+            return false;
+        }
+        if(this->displayURL != rhs.displayURL){
+            return false;
+        }
+        return true;
+    }
+
     //data member
     short click;
     short impression;

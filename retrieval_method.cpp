@@ -97,11 +97,14 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
     }
 
     //print
-    std::cout<<"********************\n";
-    for(int i = 0; i < vecInteractions.size(); ++i){
-        std::cout<<vecInteractions[i].adID << "\t" << vecInteractions[i].queryID <<std::endl;
+    {
+        std::cout<<"********************\n";
+        std::set<std::pair<size_t, size_t>, PairLess<size_t, size_t> >::iterator iter;
+        for(iter = setAdIDQueryIDPair.begin(); iter != setAdIDQueryIDPair.end(); ++iter){
+            std::cout<<iter->first << "\t" << iter->second <<std::endl;
+        }
+        std::cout<<"********************\n";
     }
-    std::cout<<"********************\n";
 }
 
 
