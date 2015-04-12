@@ -25,6 +25,23 @@ struct PairLess{
     }
 };
 
+template<typename T1 = size_t, typename T2 = size_t>
+struct PairMore{
+    bool operator()(const std::pair<T1, T2> &l, const std::pair<T1, T2> &r){
+        if(l.first > r.first){
+            return true;
+        }else if(l.first < r.first){
+            return false;
+        }else{
+            if(l.second > r.second){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+};
+
 
 struct InteractionLessForImpressionRetreival{
     bool operator()(const Interaction &l, const Interaction &r){
@@ -34,9 +51,20 @@ struct InteractionLessForImpressionRetreival{
             return false;
         }
 
-        if(l.displayURL < r.displayURL){
+//        if(l.displayURL < r.displayURL){
+//            return true;
+//        }else if(l.displayURL > r.displayURL){
+//            return false;
+//        }
+        if(l.displayURL_H < r.displayURL_H){
             return true;
-        }else if(l.displayURL > r.displayURL){
+        }else if(l.displayURL_H > r.displayURL_H){
+            return false;
+        }
+
+        if(l.displayURL_L < r.displayURL_L){
+            return true;
+        }else if(l.displayURL_L > r.displayURL_L){
             return false;
         }
 

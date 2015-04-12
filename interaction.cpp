@@ -9,7 +9,7 @@ Interaction::Interaction( istringstream &ss)
 {
     ss >> click;
     ss >> impression;
-    ss >> displayURL;
+//    ss >> displayURL;
     ss >> adID;
     ss >> advertiserID;
     ss >> depth;
@@ -42,7 +42,9 @@ Interaction::Interaction(char *start, char *end)
 
     click = str2num(start, start+sTabPos[0]);
     impression = str2num(start+sTabPos[0]+1, start+sTabPos[1]);
-    displayURL = string(start+sTabPos[1]+1, start+sTabPos[2]);
+    //    displayURL = string(start+sTabPos[1]+1, start+sTabPos[2]);
+    displayURL_H = str2num(start+sTabPos[1]+1, start+sTabPos[2]-9);
+    displayURL_L = str2num(start+sTabPos[2]-9, start+sTabPos[2]);
     adID = str2num(start+sTabPos[2]+1, start+sTabPos[3]);
     advertiserID = str2num(start+sTabPos[3]+1, start+sTabPos[4]);
     depth = str2num(start+sTabPos[4]+1, start+sTabPos[5]);
@@ -63,7 +65,9 @@ Interaction::~Interaction()
 Interaction &Interaction::operator=(const Interaction &rhs){
     this->click = rhs.click;
     this->impression = rhs.impression;
-    this->displayURL = rhs.displayURL;
+//    this->displayURL = rhs.displayURL;
+    this->displayURL_H = rhs.displayURL_H;
+    this->displayURL_L = rhs.displayURL_L;
     this->adID = rhs.adID;
     this->advertiserID = rhs.advertiserID;
     this->depth = rhs.depth;
@@ -76,40 +80,22 @@ Interaction &Interaction::operator=(const Interaction &rhs){
 }
 
 bool Interaction::operator==(const Interaction &rhs){
-    if(this->click != rhs.click){
-        return false;
-    }
-    if(this->impression != rhs.impression){
-        return false;
-    }
-    if(this->adID != rhs.adID){
-        return false;
-    }
-    if(this->advertiserID != rhs.advertiserID){
-        return false;
-    }
-    if(this->depth != rhs.depth){
-        return false;
-    }
-    if(this->position != rhs.position){
-        return false;
-    }
-    if(this->queryID != rhs.queryID){
-        return false;
-    }
-    if(this->keywordID != rhs.keywordID){
-        return false;
-    }
-    if(this->titleID != rhs.titleID){
-        return false;
-    }
-    if(this->descriptionID != rhs.descriptionID){
-        return false;
-    }
-    if(this->userID != rhs.userID){
-        return false;
-    }
-    if(this->displayURL != rhs.displayURL){
+//    if(this->displayURL != rhs.displayURL){
+//        return false;
+//    }
+    if(     (this->click != rhs.click) ||
+            (this->impression != rhs.impression) ||
+            (this->adID != rhs.adID) ||
+            (this->advertiserID != rhs.advertiserID) ||
+            (this->depth != rhs.depth) ||
+            (this->position != rhs.position) ||
+            (this->queryID != rhs.queryID) ||
+            (this->keywordID != rhs.keywordID) ||
+            (this->titleID != rhs.titleID) ||
+            (this->descriptionID != rhs.descriptionID) ||
+            (this->userID != rhs.userID) ||
+            (this->displayURL_H != rhs.displayURL_H) ||
+            (this->displayURL_L != rhs.displayURL_L) ){
         return false;
     }
     return true;
@@ -136,7 +122,9 @@ void Interaction::init(char *start, char *end)
 
     click = str2num(start, start+sTabPos[0]);
     impression = str2num(start+sTabPos[0]+1, start+sTabPos[1]);
-    displayURL = string(start+sTabPos[1]+1, start+sTabPos[2]);
+//    displayURL = string(start+sTabPos[1]+1, start+sTabPos[2]);
+    displayURL_H = str2num(start+sTabPos[1]+1, start+sTabPos[2]-9);
+    displayURL_L = str2num(start+sTabPos[2]-9, start+sTabPos[2]);
     adID = str2num(start+sTabPos[2]+1, start+sTabPos[3]);
     advertiserID = str2num(start+sTabPos[3]+1, start+sTabPos[4]);
     depth = str2num(start+sTabPos[4]+1, start+sTabPos[5]);

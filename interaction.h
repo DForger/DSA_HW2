@@ -47,7 +47,9 @@ public:
     //data member
     short click;
     short impression;
-    string displayURL;
+//    string displayURL;
+    size_t displayURL_H;
+    size_t displayURL_L;
     size_t adID;
     size_t advertiserID;
     short depth;

@@ -157,7 +157,6 @@ int readFile(const string &filename,
             ++nChrCnt;
         }
 
-
         Interaction interaction(ptr, ptr+nEndPos);
         vecInteractions.push_back(interaction);
         mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
@@ -270,10 +269,11 @@ int main(int argc, char *argv[], char *envp[])
     std::vector<Interaction> vecRetrievalInteractions;
 
 
-//    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,8232973,21353949,27,2,3,clickImpressionPair);//8232973
+
     RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
     RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
     RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+    RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
     std::cout.flush();
     std::vector<std::vector<size_t> > cmdList;
 //    parseCommand(cmdList);

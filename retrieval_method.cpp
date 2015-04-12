@@ -24,32 +24,32 @@ bool compareForGet(const Interaction &interaction,
     return true;
 }
 
-bool compareForImpressed(const Interaction& a, const Interaction& b){
-    if(a.adID != b.adID){
-        return false;
-    }
-    if(a.advertiserID != b.advertiserID){
-        return false;
-    }
+//bool compareForImpressed(const Interaction& a, const Interaction& b){
+//    if(a.adID != b.adID){
+//        return false;
+//    }
+//    if(a.advertiserID != b.advertiserID){
+//        return false;
+//    }
 
-    if(a.keywordID != b.keywordID){
-        return false;
-    }
+//    if(a.keywordID != b.keywordID){
+//        return false;
+//    }
 
-    if(a.titleID != b.titleID){
-        return false;
-    }
+//    if(a.titleID != b.titleID){
+//        return false;
+//    }
 
-    if(a.descriptionID != b.descriptionID){
-        return false;
-    }
+//    if(a.descriptionID != b.descriptionID){
+//        return false;
+//    }
 
-    if(a.displayURL.compare(b.displayURL)){
-        return false;
-    }
+//    if(a.displayURL.compare(b.displayURL)){
+//        return false;
+//    }
 
-    return true;
-}
+//    return true;
+//}
 
 void RetrievalForClickedAndImpression(const std::vector<Interaction> &vecData,
                             std::multimap<size_t, size_t> &mapUserID2Index,
@@ -155,7 +155,7 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
                 tmpAdID = (*iter).adID;
                 std::cout<<tmpAdID<<std::endl;
             }
-            std::cout<< "\t" << (*iter).displayURL << " " << (*iter).advertiserID << " " << (*iter).keywordID << " "
+            std::cout<< "\t" << (*iter).displayURL_H <<(*iter).displayURL_L << " " << (*iter).advertiserID << " " << (*iter).keywordID << " "
                     << (*iter).titleID<< " " << (*iter).descriptionID<<std::endl;
         }
 
@@ -177,7 +177,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
     for(adIter = adIterRange.first; adIter != adIterRange.second; ++adIter){
         tmp =  vecInteractions[adIter->second];
         userIter = mapUserID2ClkImp.find(tmp.userID);
-        if(userIter != mapUserID2ClkImp.end()){
+        if(userIter == mapUserID2ClkImp.end()){
            mapUserID2ClkImp.insert(std::pair<size_t, std::pair<size_t, size_t> >(tmp.userID, std::pair<size_t, size_t>(tmp.click, tmp.impression)));
         }else{
             userIter->second.first += tmp.click;
@@ -185,7 +185,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
         }
     }
 
-    std::set<pair<double, size_t>, PairLess<double, size_t> > retrievaledUserID;
+    std::set<pair<double, size_t>, PairMore<double, size_t> > retrievaledUserID;
 
     for(userIter = mapUserID2ClkImp.begin();userIter != mapUserID2ClkImp.end(); ++userIter){
         double ratio;
@@ -200,7 +200,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
     //print
     {
         std::cout<<"********************\n";
-        std::set<pair<double, size_t>, PairLess<double, size_t> >::iterator iter = retrievaledUserID.begin();
+        std::set<pair<double, size_t>, PairMore<double, size_t> >::iterator iter = retrievaledUserID.begin();
 
         for(; (theta < (*iter).first)&&(iter != retrievaledUserID.end()); ++iter){
             std::cout << (*iter).second << std::endl;
