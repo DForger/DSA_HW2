@@ -88,7 +88,7 @@ int loadFile(const string &filename,
         mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
         mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
         ++nCnt;
-        if(nCnt%100000 == 0){
+        if(nCnt%1000000 == 0){
             t2 = time(NULL);
             std::cout << (double)nCnt/k_totalLineNum << "% lines loaded. used time " << t2-t1 << "sec \n";
             std::cout.flush();
@@ -137,7 +137,7 @@ int readFile(const string &filename,
 
     //memory-map the file
     try{
-        mapped = mmap(0, size, PROT_READ, MAP_PRIVATE, fd, 0);
+        mapped = mmap(0, size, PROT_READ, MAP_PRIVATE| MAP_POPULATE, fd, 0);
         if(mapped == MAP_FAILED){
             throw("failed to map file\n");
         }
@@ -163,7 +163,7 @@ int readFile(const string &filename,
         mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
         mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
         ++nCnt;
-        if(nCnt%100000 == 0){
+        if(nCnt%1000000 == 0){
             t2 = time(NULL);
             std::cout << (double)nCnt*100/k_totalLineNum << "% loaded. used time " << t2-t1 << "sec \n";
             std::cout.flush();
