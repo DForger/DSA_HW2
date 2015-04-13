@@ -206,7 +206,7 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
 
 void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
                            std::multimap<size_t, size_t> &mapUserID2Index,
-                           std::map<size_t, std::set<size_t> > mapUserID2AdIDSet,
+                           std::map<size_t, std::set<size_t> > &mapUserID2AdIDSet,
                            size_t userID_1,
                            size_t userID_2,
                            std::vector<Interaction> &vecRetrievaledInteraction);
