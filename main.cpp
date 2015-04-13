@@ -7,6 +7,7 @@
 
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -53,6 +54,18 @@ const size_t k_totalLineNum = 149639105;
 //    }
 //    return 0;
 //}
+
+int loadFileC(const char* fileName,
+              std::vector<Interaction> &vecInteractions,
+              std::multimap<size_t, size_t> &mapUserID2Index,
+              std::multimap<size_t, size_t> &mapAdID2Index){
+    FILE *file = fopen(fileName, "r");
+    char line[256];
+
+    while(fgets(line, 256, file)){
+
+    }
+}
 
 int loadFile(const string &filename,
              std::vector<Interaction> &vecInteractions,
@@ -101,25 +114,32 @@ int loadFile(const string &filename,
     return 0;
 }
 
+
 int readFile(const string &filename,
                  std::vector<Interaction> &vecInteractions,
                  std::multimap<size_t, size_t> &mapUserID2Index,
                  std::multimap<size_t, size_t> &mapAdID2Index){
-    //file descriptor
-    int fd;
-    //file info
-    struct stat s;
-    int status;
-    size_t size;
+    //init
+    vecInteractions.clear();
+    mapUserID2Index.clear();
+    mapAdID2Index.clear();
 
-    //the memory-mapped thing itself
-    void *mapped;
-    int i;
+    vecInteractions.reserve(50000000);
 
     time_t t1, t2;
     t1 = time(NULL);
     std::cout<<"start loading file\n";
     std::cout.flush();
+
+    //file descriptor
+    int fd;
+    //file info
+    struct stat fileState;
+    int status;
+    size_t fileSize;
+
+    //the memory-mapped thing itself
+    void *mapped;
 
     //open file for reading
     try{
@@ -132,27 +152,47 @@ int readFile(const string &filename,
         std::cout.flush();
         return -1;
     }
-    status = fstat(fd, & s);
-    size = s.st_size;
+    status = fstat(fd, & fileState);
+    fileSize = fileState.st_size;
 
     //memory-map the file
     try{
-        mapped = mmap(0, size, PROT_READ, MAP_PRIVATE| MAP_POPULATE, fd, 0);
+        mapped = mmap(0, fileSize, PROT_READ, MAP_PRIVATE| MAP_POPULATE, fd, 0);
         if(mapped == MAP_FAILED){
             throw("failed to map file\n");
         }
+
     }catch(const char* msg){
         std::cout<<msg<<std::endl;
         std::cout.flush();
         return -1;
     }
+    madvise(mapped, fileSize, MADV_SEQUENTIAL|MADV_WILLNEED);
+
 
     char *ptr = (char*)mapped;
     size_t nCnt = 0;
     size_t nChrCnt = 0;
+
+    size_t nLineNum = 0;
+    std::cout<<"start conuting line\n";
+    for(; nChrCnt < fileSize; ++nChrCnt){
+        if(*ptr == '\n'){
+            ++nLineNum;
+        }
+        ++ptr;
+    }
+
+    nChrCnt = 0;
+    ptr = static_cast<char*>(mapped);
+
+    t2 = time(NULL);
+    std::cout << "line num " << nLineNum << " time used " << t2-t1 << "sec \n";
+    std::cout.flush();
+
     while(1){
         int nEndPos = 0;
-        while((nChrCnt < size) && (ptr[nEndPos] != '\n')){
+        while((nChrCnt < fileSize) && (ptr[nEndPos] != '\n')){
             ++nEndPos;
             ++nChrCnt;
         }
@@ -171,17 +211,33 @@ int readFile(const string &filename,
         ++nEndPos;
         ++nChrCnt;
 
-        if(nChrCnt >= size){
+        if(nChrCnt >= fileSize){
             break;
         }
         ptr = ptr + nEndPos;
     }
+
+    //close file and file mapping
+    try{
+        if(munmap(mapped, fileSize)){
+            throw("failed to unmapping file\n");
+        }
+        if(close(fd)){
+            throw("failed to close file\n");
+        }
+    }catch(const char *msg){
+        std::cout<<msg<<std::endl;
+        std::cout.flush();
+        return -1;
+    }
+
 
     t2 = time(NULL);
     std::cout<<"loading compeleted, used "<< t2-t1 << "sec \n";
     return 0;
 
 }
+
 
 
 void parseCommand(std::vector<std::vector<size_t> > &cmdList){
@@ -245,10 +301,10 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
 
 
 
-
 void run(std::vector<std::vector<size_t> > &cmdList){
 
 }
+
 
 int main(int argc, char *argv[], char *envp[])
 {
@@ -272,6 +328,7 @@ int main(int argc, char *argv[], char *envp[])
 
     RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
     RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
     RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
     RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
     std::cout.flush();

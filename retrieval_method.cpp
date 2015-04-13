@@ -86,6 +86,7 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
                 std::multimap<size_t, size_t> &mapUserID2Index,
                 size_t userID,
                 std::set<std::pair<size_t, size_t>, PairLess<size_t, size_t> > &setAdIDQueryIDPair){
+    setAdIDQueryIDPair.clear();
     std::pair<std::multimap<size_t, size_t>::iterator, std::multimap<size_t, size_t>::iterator> iterRange;
     iterRange = mapUserID2Index.equal_range(userID);
 
@@ -185,7 +186,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
         }
     }
 
-    std::set<pair<double, size_t>, PairMore<double, size_t> > retrievaledUserID;
+    std::set<pair<double, size_t>, PairGreater<double, size_t> > retrievaledUserID;
 
     for(userIter = mapUserID2ClkImp.begin();userIter != mapUserID2ClkImp.end(); ++userIter){
         double ratio;
@@ -200,7 +201,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
     //print
     {
         std::cout<<"********************\n";
-        std::set<pair<double, size_t>, PairMore<double, size_t> >::iterator iter = retrievaledUserID.begin();
+        std::set<pair<double, size_t>, PairGreater<double, size_t> >::iterator iter = retrievaledUserID.begin();
 
         for(; (theta < (*iter).first)&&(iter != retrievaledUserID.end()); ++iter){
             std::cout << (*iter).second << std::endl;

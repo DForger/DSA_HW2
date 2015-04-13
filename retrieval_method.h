@@ -26,7 +26,7 @@ struct PairLess{
 };
 
 template<typename T1 = size_t, typename T2 = size_t>
-struct PairMore{
+struct PairGreater{
     bool operator()(const std::pair<T1, T2> &l, const std::pair<T1, T2> &r){
         if(l.first > r.first){
             return true;
