@@ -300,6 +300,7 @@ int readFile(const string &filename,
 
 
 void parseCommand(std::vector<std::vector<size_t> > &cmdList){
+    int nCmdCnt = 0;
     while(1){
         string cmd;
         std::vector<size_t> cmdParam;
@@ -343,7 +344,7 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
             cmdParam.push_back(static_cast<size_t>(theta*k_thetaScale));
 
         }else if(!cmd.compare("quit")){
-            break;
+            cmdParam.push_back(k_quit);
         }
 
 //        for(int i = 0; i < cmdParam.size(); ++i){
@@ -354,6 +355,10 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
 
         if(!cmdParam.empty()){
             cmdList.push_back(cmdParam);
+        }
+
+        if(cmdList[nCmdCnt][0] == k_quit){
+            return;
         }
     }
 }
