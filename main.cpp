@@ -222,8 +222,8 @@ int readFile(const string &filename,
 //        mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
 
         vecInteractions[nLineCnt].init(ptr, ptr+nEndPos);
-//        mapUserID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].userID, nCnt));
-//        mapAdID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].adID, nCnt));
+        mapUserID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].userID, nCnt));
+        mapAdID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].adID, nCnt));
 
         ++nCnt;
         if(nCnt%1000000 == 0){
@@ -353,14 +353,21 @@ int main(int argc, char *argv[], char *envp[])
     std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
     std::vector<Interaction> vecRetrievalInteractions;
 
+    time_t t1, t2;
+    t1 = time(NULL);
 
+    for(int i = 0; i < 400; ++i){
+        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
+//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
+    }
 
-//    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
-//    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-//    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-//    RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
-//    RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
-//    std::cout.flush();
+    t2 = time(NULL);
+    std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
+    std::cout.flush();
+
 //    std::vector<std::vector<size_t> > cmdList;
 //    parseCommand(cmdList);
 
