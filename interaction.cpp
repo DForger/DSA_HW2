@@ -77,6 +77,8 @@ Interaction &Interaction::operator=(const Interaction &rhs){
     this->titleID = rhs.titleID;
     this->descriptionID = rhs.descriptionID;
     this->userID = rhs.userID;
+
+    return *this;
 }
 
 bool Interaction::operator==(const Interaction &rhs){
