@@ -184,7 +184,8 @@ int readFile(const string &filename,
 
     //memory-map the file
     try{
-        mapped = mmap(0, fileSize, PROT_READ, MAP_PRIVATE| MAP_POPULATE, fd, 0);
+        //mapped = mmap(0, fileSize, PROT_READ, MAP_PRIVATE| MAP_POPULATE, fd, 0);
+        mapped = mmap(0, fileSize, PROT_READ, MAP_SHARED, fd, 0);
         if(mapped == MAP_FAILED){
             throw("failed to map file\n");
         }
