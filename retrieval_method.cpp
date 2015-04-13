@@ -119,8 +119,14 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
                            size_t userID_1,
                            size_t userID_2,
                            std::vector<Interaction> &vecRetrievaledInteraction){
+
     std::set<Interaction, InteractionLessForImpressionRetreival> setRetrievals_1;
     std::set<Interaction, InteractionLessForImpressionRetreival> setRetrievals_2;
+    std::set<Interaction, InteractionLessForImpressionRetreival> setCommonRetrieval;
+
+    std::set<size_t> setAdID_1;
+    std::set<size_t> setAdID_2;
+    std::set<size_t> setCommonAdID;
 
     {
         std::multimap<size_t, size_t>::iterator iter;
@@ -129,42 +135,43 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
 
         for(iter = iterRange.first; iter != iterRange.second; ++iter){
             setRetrievals_1.insert(vecInteractions[iter->second]);
+            setAdID_1.insert(vecInteractions[iter->second].adID);
         }
 
         iterRange = mapUserID2Index.equal_range(userID_2);
         for(iter = iterRange.first; iter != iterRange.second; ++iter){
             setRetrievals_2.insert(vecInteractions[iter->second]);
+            setAdID_2.insert(vecInteractions[iter->second].adID);
         }
     }
 
-    std::set<Interaction, InteractionLessForImpressionRetreival> setCommonRetrieval;
+    //find common adID
+    {
+        std::set<size_t>::iterator adIDIter_1, adIDIter_2;
+        for(adIDIter_1 = setAdID_1.begin(); adIDIter_1 != setAdID_1.end(); ++adIDIter_1){
+            adIDIter_2 = setAdID_2.find(*adIDIter_1);
+            if(adIDIter_2 != setAdID_2.end()){
+                setCommonAdID.insert(*adIDIter_2);
+            }
+        }
+    }
+
+
     {
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter1;
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter2;
+        std::set<size_t>::iterator adIDIter;
         for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end();  ++iter1){
-            bool bFound = false;
-            for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-                if(iter1->adID == iter2->adID){
-                    bFound = true;
-                    break;
-                }
-            }
-
-            if(!bFound){
-                setRetrievals_1.erase(iter1);
+            adIDIter = setCommonAdID.find(iter1->adID);
+            if(adIDIter != setCommonAdID.end()){
+                setCommonRetrieval.insert(*iter1);
             }
         }
 
         for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-            bool bFound = false;
-            for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
-                if(iter2->adID == iter1->adID){
-                    bFound = true;
-                    break;
-                }
-            }
-            if(!bFound){
-                setRetrievals_2.erase(iter2);
+            adIDIter = setCommonAdID.find(iter2->adID);
+            if(adIDIter != setCommonAdID.end()){
+                setCommonRetrieval.insert(*iter2);
             }
         }
 
@@ -174,13 +181,13 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
 //                setCommonRetrieval.insert(*iter2);
 //            }
 //        }
-        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
-            setCommonRetrieval.insert(*iter1);
-        }
+//        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
+//            setCommonRetrieval.insert(*iter1);
+//        }
 
-        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-            setCommonRetrieval.insert(*iter2);
-        }
+//        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
+//            setCommonRetrieval.insert(*iter2);
+//        }
 
     }
 
