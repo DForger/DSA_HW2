@@ -91,6 +91,103 @@ struct InteractionLessForImpressionRetreival{
     }
 };
 
+template<typename T1>
+void findCommonSet(std::set<T1> &s1, std::set<T1> &s2, std::set<T1> &s3){
+    s3.clear();
+    typename std::set<T1>::iterator iter1 = s1.begin();
+    typename std::set<T1>::iterator iter2 = s2.begin();
+
+
+    while((iter1 != s1.end()) && (iter2 != s2.end())){
+        if((*iter1) > (*iter2)){
+            ++iter2;
+        }else if((*iter1) < (*iter2)){
+            ++iter1;
+        }else{
+            s3.insert(*iter1);
+            ++iter1;
+            ++iter2;
+        }
+    }
+
+    if(iter1 == s1.end()){
+        while(iter2 != s2.end()){
+            if(*iter2 < *iter1){
+                ++iter2;
+            }else if(*iter2 > *iter1){
+                return;
+            }else{
+                s3.insert(*iter2);
+                return;
+            }
+        }
+    }
+
+    if(iter2 == s2.end()){
+        while(iter1 != s1.end()){
+            if(*iter1 < *iter2){
+                ++iter1;
+            }else if(*iter1 > *iter2){
+                return;
+            }else{
+                s3.insert(*iter2);
+                return;
+            }
+        }
+    }
+
+}
+
+//template<typename T1>
+//void findCommonSet(const std::set<T1> &s1, std::set<T1> &s2, std::set<T1> &s3){
+
+//    typename std::set<T1>::iterator iter1 = s1.begin();
+
+//    typename std::set<T1>::iterator iter2 = s2.begin();
+
+//    size_t nLengthS1 = s1.size();
+//    size_t nLengthS2 = s2.size();
+
+//    size_t nCntS1 = 0, nCntS2 = 0;
+//    while((nCntS1 < nLengthS1) && (nCntS2 < nLengthS2)){
+//        if(iter1[nCntS1] > iter2[nCntS2]){
+//            ++nCntS2;
+//        }else if(iter1[nCntS1] < iter2[nCntS2]){
+//            ++nCntS1;
+//        }else{
+//            s3.insert(iter1[nCntS1]);
+//            ++nCntS1;
+//            ++nCntS2;
+//        }
+//    }
+
+//    if(nCntS1 == nLengthS1){
+//        while(nCntS2 < nLengthS2){
+//            if(iter2[nCntS2] < iter1[nCntS1]){
+//                ++nCntS2;
+//            }else if(iter2[nCntS2] > iter1[nCntS1]){
+//                return;
+//            }else{
+//                s3.insert(iter2[nCntS2]);
+//                return;
+//            }
+//        }
+//    }
+
+//    if(nCntS2 == nLengthS2){
+//        while(nCntS1 < nLengthS1){
+//            if(iter2[nCntS2] > iter1[nCntS1]){
+//                ++nCntS1;
+//            }else if(iter2[nCntS2] < iter1[nCntS1]){
+//                return;
+//            }else{
+//                s3.insert(iter2[nCntS2]);
+//                return;
+//            }
+//        }
+//    }
+
+//}
 
 void RetrievalForClickedAndImpression(const std::vector<Interaction> &vecData,
                             std::multimap<size_t, size_t> &mapUserID2Index,
@@ -109,6 +206,7 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
 
 void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
                            std::multimap<size_t, size_t> &mapUserID2Index,
+                           std::map<size_t, std::set<size_t> > mapUserID2AdIDSet,
                            size_t userID_1,
                            size_t userID_2,
                            std::vector<Interaction> &vecRetrievaledInteraction);

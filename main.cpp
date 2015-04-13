@@ -138,7 +138,8 @@ int loadFile(const string &filename,
 int readFile(const string &filename,
                  std::vector<Interaction> &vecInteractions,
                  std::multimap<size_t, size_t> &mapUserID2Index,
-                 std::multimap<size_t, size_t> &mapAdID2Index){
+                 std::multimap<size_t, size_t> &mapAdID2Index,
+                 std::map<size_t, std::set<size_t> > &mapUserID2AdIDSet){
     //init
     vecInteractions.clear();
     mapUserID2Index.clear();
@@ -213,6 +214,10 @@ int readFile(const string &filename,
     std::cout.flush();
 
     size_t nLineCnt = 0;
+
+    //map userid to its adList
+
+    std::map<size_t, std::set<size_t> >::iterator iter;
     while(1){
         int nEndPos = 0;
         while((nChrCnt < fileSize) && (ptr[nEndPos] != '\n')){
@@ -228,6 +233,15 @@ int readFile(const string &filename,
         vecInteractions[nLineCnt].init(ptr, ptr+nEndPos);
         mapUserID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].userID, nCnt));
         mapAdID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].adID, nCnt));
+        iter = mapUserID2AdIDSet.find(vecInteractions[nLineCnt].userID);
+        if(iter != mapUserID2AdIDSet.end()){
+            (iter->second).insert(vecInteractions[nLineCnt].adID);
+        }else{
+            std::set<size_t> adIDset;
+            adIDset.insert(vecInteractions[nLineCnt].adID);
+            mapUserID2AdIDSet.insert(std::pair<size_t, std::set<size_t> >(vecInteractions[nLineCnt].userID, adIDset));
+        }
+
 
         ++nCnt;
         if(nCnt%1000000 == 0){
@@ -331,7 +345,8 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
 void run(std::vector<std::vector<size_t> > &cmdList,
          std::vector<Interaction> &vecTotalInteractions,
          std::multimap<size_t, size_t> &mapUserID2Index,
-         std::multimap<size_t, size_t> &mapAdID2Index){
+         std::multimap<size_t, size_t> &mapAdID2Index,
+         std::map<size_t, std::set<size_t> > mapUserID2adIDSet){
 
     std::pair<size_t, size_t> clickImpressionPair;
     std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
@@ -346,10 +361,13 @@ void run(std::vector<std::vector<size_t> > &cmdList,
                                             clickImpressionPair);
             break;
         case k_clicked:
-            RetrievalForClicked(vecTotalInteractions, mapUserID2Index, cmdList[i][1], setAdIDQueryIDPair);
+            RetrievalForClicked(vecTotalInteractions, mapUserID2Index,
+                                cmdList[i][1], setAdIDQueryIDPair);
             break;
         case k_impressed:
-            RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,cmdList[i][1], cmdList[i][2],vecRetrievalInteractions);
+            RetrievalForImpressed(vecTotalInteractions, mapUserID2Index, mapUserID2adIDSet,
+                                  cmdList[i][1], cmdList[i][2],
+                    vecRetrievalInteractions);
             break;
         case k_profit:
             RetrievalForProfit(vecTotalInteractions, mapAdID2Index,cmdList[i][1], static_cast<double>(cmdList[i][2])/k_thetaScale);
@@ -365,7 +383,7 @@ int main(int argc, char *argv[], char *envp[])
     std::vector<Interaction> vecTotalInteractions;
     std::multimap<size_t, size_t> mapUserID2Index;
     std::multimap<size_t, size_t> mapAdID2Index;
-    vecTotalInteractions.reserve(50000000);
+    std::map<size_t, std::set<size_t> > mapUserID2adIDSet;
 
     std::pair<size_t, size_t> clickImpressionPair;
     std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
@@ -374,7 +392,11 @@ int main(int argc, char *argv[], char *envp[])
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
 
-    if(readFile(strFileAddress, vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
+    if(readFile(strFileAddress,
+                vecTotalInteractions,
+                mapUserID2Index,
+                mapAdID2Index,
+                mapUserID2adIDSet)){
         return -1;
     }
 
@@ -389,10 +411,10 @@ int main(int argc, char *argv[], char *envp[])
 ////        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
 
 
-//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-//        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
-//        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
-//        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231944, 490234,vecRetrievalInteractions);
+        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
+        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
+        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231944, 490234,vecRetrievalInteractions);
 //    }
 
     //clicked 12565
@@ -400,10 +422,10 @@ int main(int argc, char *argv[], char *envp[])
     //profit 21459920 0.1
     //impressed 6231938 0
     //quit
-      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
-      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
-      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231938, 0,vecRetrievalInteractions);
+//      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+//      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
+//      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
+//      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231938, 0,vecRetrievalInteractions);
 
 
 
@@ -414,7 +436,7 @@ int main(int argc, char *argv[], char *envp[])
     std::vector<std::vector<size_t> > cmdList;
     parseCommand(cmdList);
 
-    run(cmdList, vecTotalInteractions, mapUserID2Index, mapAdID2Index);
+    run(cmdList, vecTotalInteractions, mapUserID2Index, mapAdID2Index, mapUserID2adIDSet);
 
     return 0;
 }

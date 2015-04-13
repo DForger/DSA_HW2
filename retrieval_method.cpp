@@ -114,8 +114,11 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
 }
 
 
+
+
 void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
                            std::multimap<size_t, size_t> &mapUserID2Index,
+                           std::map<size_t,  std::set<size_t>  > mapUserID2AdIDSet,
                            size_t userID_1,
                            size_t userID_2,
                            std::vector<Interaction> &vecRetrievaledInteraction){
@@ -124,71 +127,40 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
     std::set<Interaction, InteractionLessForImpressionRetreival> setRetrievals_2;
     std::set<Interaction, InteractionLessForImpressionRetreival> setCommonRetrieval;
 
-    std::set<size_t> setAdID_1;
-    std::set<size_t> setAdID_2;
     std::set<size_t> setCommonAdID;
 
+    findCommonSet(mapUserID2AdIDSet[userID_1], mapUserID2AdIDSet[userID_2], setCommonAdID);
     {
         std::multimap<size_t, size_t>::iterator iter;
         std::pair<std::multimap<size_t, size_t>::iterator, std::multimap<size_t, size_t>::iterator> iterRange;
         iterRange = mapUserID2Index.equal_range(userID_1);
 
         for(iter = iterRange.first; iter != iterRange.second; ++iter){
-            setRetrievals_1.insert(vecInteractions[iter->second]);
-            setAdID_1.insert(vecInteractions[iter->second].adID);
+            if(setCommonAdID.find(vecInteractions[iter->second].adID) != setCommonAdID.end()){
+                setRetrievals_1.insert(vecInteractions[iter->second]);
+            }
         }
 
         iterRange = mapUserID2Index.equal_range(userID_2);
         for(iter = iterRange.first; iter != iterRange.second; ++iter){
-            setRetrievals_2.insert(vecInteractions[iter->second]);
-            setAdID_2.insert(vecInteractions[iter->second].adID);
-        }
-    }
-
-    //find common adID
-    {
-        std::set<size_t>::iterator adIDIter_1, adIDIter_2;
-        for(adIDIter_1 = setAdID_1.begin(); adIDIter_1 != setAdID_1.end(); ++adIDIter_1){
-            adIDIter_2 = setAdID_2.find(*adIDIter_1);
-            if(adIDIter_2 != setAdID_2.end()){
-                setCommonAdID.insert(*adIDIter_2);
+            if(setCommonAdID.find(vecInteractions[iter->second].adID) != setCommonAdID.end()){
+                setRetrievals_2.insert(vecInteractions[iter->second]);
             }
         }
     }
+
 
 
     {
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter1;
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter2;
-        std::set<size_t>::iterator adIDIter;
         for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end();  ++iter1){
-            adIDIter = setCommonAdID.find(iter1->adID);
-            if(adIDIter != setCommonAdID.end()){
-                setCommonRetrieval.insert(*iter1);
-            }
+            setCommonRetrieval.insert(*iter1);
         }
 
         for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-            adIDIter = setCommonAdID.find(iter2->adID);
-            if(adIDIter != setCommonAdID.end()){
-                setCommonRetrieval.insert(*iter2);
-            }
+            setCommonRetrieval.insert(*iter2);
         }
-
-//        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-//            iter1 = setRetrievals_1.find(*iter2);
-//            if(iter1 != setRetrievals_1.end()){
-//                setCommonRetrieval.insert(*iter2);
-//            }
-//        }
-//        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
-//            setCommonRetrieval.insert(*iter1);
-//        }
-
-//        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
-//            setCommonRetrieval.insert(*iter2);
-//        }
-
     }
 
     //print result
@@ -232,7 +204,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
         }
     }
 
-    std::set<pair<double, size_t>, PairGreater<double, size_t> > retrievaledUserID;
+    std::set<pair<double, size_t>, PairLess<double, size_t> > retrievaledUserID;
 
     for(userIter = mapUserID2ClkImp.begin();userIter != mapUserID2ClkImp.end(); ++userIter){
         double ratio;
@@ -241,15 +213,17 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
         }else{
             ratio = (double)userIter->second.first/(double)userIter->second.second;
         }
-        retrievaledUserID.insert(std::pair<double, size_t>(ratio, userIter->first));
+        if(ratio >= theta){
+            retrievaledUserID.insert(std::pair<double, size_t>(ratio, userIter->first));
+        }
     }
 
     //print
     {
         std::cout<<"********************\n";
-        std::set<pair<double, size_t>, PairGreater<double, size_t> >::iterator iter = retrievaledUserID.begin();
+        std::set<pair<double, size_t>, PairLess<double, size_t> >::iterator iter = retrievaledUserID.begin();
 
-        for(; (theta <= (*iter).first)&&(iter != retrievaledUserID.end()); ++iter){
+        for(; (iter != retrievaledUserID.end()); ++iter){
             std::cout << (*iter).second << std::endl;
         }
         std::cout<<"********************\n";
