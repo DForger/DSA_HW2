@@ -411,10 +411,10 @@ int main(int argc, char *argv[], char *envp[])
 ////        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
 
 
-        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
-        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
-        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231944, 490234,vecRetrievalInteractions);
+//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+//        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
+//        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
+//        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231944, 490234,vecRetrievalInteractions);
 //    }
 
     //clicked 12565
@@ -422,10 +422,10 @@ int main(int argc, char *argv[], char *envp[])
     //profit 21459920 0.1
     //impressed 6231938 0
     //quit
-//      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-//      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
-//      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
-//      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231938, 0,vecRetrievalInteractions);
+      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
+      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
+      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231938, 0,vecRetrievalInteractions);
 
 
 
