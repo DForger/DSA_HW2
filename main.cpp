@@ -176,6 +176,10 @@ int readFile(const string &filename,
         return -1;
     }
     status = fstat(fd, & fileState);
+    if(status){
+        std::cout<<"failed to get file status\n";
+
+    }
     fileSize = fileState.st_size;
 
     //memory-map the file
@@ -361,11 +365,12 @@ void run(std::vector<std::vector<size_t> > &cmdList,
          std::multimap<size_t, size_t> &mapAdID2Index,
          std::map<size_t, std::set<size_t> > mapUserID2adIDSet){
 
-    std::pair<size_t, size_t> clickImpressionPair;
-    std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
-    std::vector<Interaction> vecRetrievalInteractions;
 
-    for(int i = 0; i < cmdList.size(); ++i){
+
+    for(size_t i = 0; i < cmdList.size(); ++i){
+        std::pair<size_t, size_t> clickImpressionPair;
+        std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
+        std::vector<Interaction> vecRetrievalInteractions;
         switch (cmdList[i][0]) {
         case k_get:
             RetrievalForClickedAndImpression(vecTotalInteractions,
@@ -385,6 +390,8 @@ void run(std::vector<std::vector<size_t> > &cmdList,
         case k_profit:
             RetrievalForProfit(vecTotalInteractions, mapAdID2Index,cmdList[i][1], static_cast<double>(cmdList[i][2])/k_thetaScale);
             break;
+        case k_quit:
+            return;
         }
     }
 }
