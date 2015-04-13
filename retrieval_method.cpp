@@ -3,8 +3,8 @@
 bool compareForGet(const Interaction &interaction,
                    size_t adID,
                    size_t queryID,
-                   size_t position,
-                   size_t depth){
+                   short position,
+                   short depth){
     if(interaction.adID != adID){
         return false;
     }
@@ -86,15 +86,20 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
                 std::multimap<size_t, size_t> &mapUserID2Index,
                 size_t userID,
                 std::set<std::pair<size_t, size_t>, PairLess<size_t, size_t> > &setAdIDQueryIDPair){
+    //init
     setAdIDQueryIDPair.clear();
+
+
     std::pair<std::multimap<size_t, size_t>::iterator, std::multimap<size_t, size_t>::iterator> iterRange;
     iterRange = mapUserID2Index.equal_range(userID);
 
     std::multimap<size_t, size_t>::iterator iter;
     for(iter = iterRange.first; iter != iterRange.second; ++iter){
-        setAdIDQueryIDPair.insert(
+        if(vecInteractions[iter->second].click >= 1){
+            setAdIDQueryIDPair.insert(
                     std::pair<size_t, size_t>(  vecInteractions[iter->second].adID,
                                                 vecInteractions[iter->second].queryID));
+        }
     }
 
     //print
@@ -151,7 +156,7 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
 
         size_t tmpAdID = 0;
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter = setCommonRetrieval.begin();
-        for(; iter != setCommonRetrieval.end(); ){
+        for(; iter != setCommonRetrieval.end(); ++iter){
             if(tmpAdID != (*iter).adID){
                 tmpAdID = (*iter).adID;
                 std::cout<<tmpAdID<<std::endl;
@@ -203,7 +208,7 @@ void RetrievalForProfit(std::vector<Interaction> &vecInteractions,
         std::cout<<"********************\n";
         std::set<pair<double, size_t>, PairGreater<double, size_t> >::iterator iter = retrievaledUserID.begin();
 
-        for(; (theta < (*iter).first)&&(iter != retrievaledUserID.end()); ++iter){
+        for(; (theta <= (*iter).first)&&(iter != retrievaledUserID.end()); ++iter){
             std::cout << (*iter).second << std::endl;
         }
         std::cout<<"********************\n";

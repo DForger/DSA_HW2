@@ -86,9 +86,9 @@ struct InteractionLessForImpressionRetreival{
             return false;
         }
 
-        if(l.descriptionID < r.titleID){
+        if(l.descriptionID < r.descriptionID){
             return true;
-        }else if(l.titleID > r.titleID){
+        }else if(l.descriptionID > r.descriptionID){
             return false;
         }
 

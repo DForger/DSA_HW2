@@ -23,6 +23,7 @@ const size_t k_clicked = 1;
 const size_t k_impressed = 2;
 const size_t k_profit = 3;
 const size_t k_quit = 4;
+const double k_thetaScale = 10000000;
 const size_t k_totalLineNum = 149639105;
 //int loadFile(const string &filename,
 //             std::vector<Interaction> &vecInteractions,
@@ -301,13 +302,13 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
             }
         }else if(!cmd.compare("profit")){
             cmdParam.push_back(k_profit);
-            size_t paramCnt = 2;
-            while(paramCnt > 0){
-                size_t param;
-                cin>>param;
-                cmdParam.push_back(param);
-                --paramCnt;
-            }
+            size_t adID;
+            double theta;
+            cin>>adID;
+            cin>>theta;
+            cmdParam.push_back(adID);
+            cmdParam.push_back(static_cast<size_t>(theta*k_thetaScale));
+
         }else if(!cmd.compare("quit")){
             break;
         }
@@ -326,8 +327,34 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
 
 
 
-void run(std::vector<std::vector<size_t> > &cmdList){
+void run(std::vector<std::vector<size_t> > &cmdList,
+         std::vector<Interaction> &vecTotalInteractions,
+         std::multimap<size_t, size_t> &mapUserID2Index,
+         std::multimap<size_t, size_t> &mapAdID2Index){
 
+    std::pair<size_t, size_t> clickImpressionPair;
+    std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
+    std::vector<Interaction> vecRetrievalInteractions;
+
+    for(int i = 0; i < cmdList.size(); ++i){
+        switch (cmdList[i][0]) {
+        case k_get:
+            RetrievalForClickedAndImpression(vecTotalInteractions,
+                                             mapUserID2Index,
+                                             cmdList[i][1], cmdList[i][2], cmdList[i][3], cmdList[i][4], cmdList[i][5],
+                                            clickImpressionPair);
+            break;
+        case k_clicked:
+            RetrievalForClicked(vecTotalInteractions, mapUserID2Index, cmdList[i][1], setAdIDQueryIDPair);
+            break;
+        case k_impressed:
+            RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,cmdList[i][1], cmdList[i][2],vecRetrievalInteractions);
+            break;
+        case k_profit:
+            RetrievalForProfit(vecTotalInteractions, mapAdID2Index,cmdList[i][1], static_cast<double>(cmdList[i][2])/k_thetaScale);
+            break;
+        }
+    }
 }
 
 
@@ -339,6 +366,10 @@ int main(int argc, char *argv[], char *envp[])
     std::multimap<size_t, size_t> mapAdID2Index;
     vecTotalInteractions.reserve(50000000);
 
+    std::pair<size_t, size_t> clickImpressionPair;
+    std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
+    std::vector<Interaction> vecRetrievalInteractions;
+
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
 //    if(loadFileC(strFileAddress.c_str(), vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
@@ -349,27 +380,43 @@ int main(int argc, char *argv[], char *envp[])
         return -1;
     }
 
-    std::pair<size_t, size_t> clickImpressionPair;
-    std::set<pair<size_t, size_t>, PairLess<size_t, size_t> > setAdIDQueryIDPair;
-    std::vector<Interaction> vecRetrievalInteractions;
-
-    time_t t1, t2;
-    t1 = time(NULL);
+//    time_t t1, t2;
+//    t1 = time(NULL);
 
     for(int i = 0; i < 400; ++i){
-        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
-//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
-        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
+//        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
+////        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+//        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+//        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
+
+
+        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
+        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
+        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231944, 490234,vecRetrievalInteractions);
     }
 
-    t2 = time(NULL);
-    std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
-    std::cout.flush();
+    //clicked 12565
+    //get 6231937 21459920 2416 2 2
+    //profit 21459920 0.1
+    //impressed 6231938 0
+    //quit
+//      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+//      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
+//      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
+//      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231938, 0,vecRetrievalInteractions);
 
-//    std::vector<std::vector<size_t> > cmdList;
-//    parseCommand(cmdList);
+
+
+//    t2 = time(NULL);
+//    std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
+//    std::cout.flush();
+
+    std::vector<std::vector<size_t> > cmdList;
+    parseCommand(cmdList);
+
+    run(cmdList, vecTotalInteractions, mapUserID2Index, mapAdID2Index);
 
     return 0;
 }
