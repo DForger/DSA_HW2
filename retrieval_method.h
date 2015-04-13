@@ -110,31 +110,31 @@ void findCommonSet(std::set<T1> &s1, std::set<T1> &s2, std::set<T1> &s3){
         }
     }
 
-    if(iter1 == s1.end()){
-        while(iter2 != s2.end()){
-            if(*iter2 < *iter1){
-                ++iter2;
-            }else if(*iter2 > *iter1){
-                return;
-            }else{
-                s3.insert(*iter2);
-                return;
-            }
-        }
-    }
+//    if(iter1 == s1.end()){
+//        while(iter2 != s2.end()){
+//            if(*iter2 < *iter1){
+//                ++iter2;
+//            }else if(*iter2 > *iter1){
+//                return;
+//            }else{
+//                s3.insert(*iter2);
+//                return;
+//            }
+//        }
+//    }
 
-    if(iter2 == s2.end()){
-        while(iter1 != s1.end()){
-            if(*iter1 < *iter2){
-                ++iter1;
-            }else if(*iter1 > *iter2){
-                return;
-            }else{
-                s3.insert(*iter2);
-                return;
-            }
-        }
-    }
+//    if(iter2 == s2.end()){
+//        while(iter1 != s1.end()){
+//            if(*iter1 < *iter2){
+//                ++iter1;
+//            }else if(*iter1 > *iter2){
+//                return;
+//            }else{
+//                s3.insert(*iter2);
+//                return;
+//            }
+//        }
+//    }
 
 }
 

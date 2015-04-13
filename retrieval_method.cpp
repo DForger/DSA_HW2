@@ -114,6 +114,32 @@ void RetrievalForClicked(const std::vector<Interaction> &vecInteractions,
 }
 
 
+void findInteractionWithAdSet(const std::vector<Interaction> &vecInteractions,
+                              std::multimap<size_t, size_t> &mapUserID2Index,
+                              size_t userID,
+                              std::set<size_t> &setCommonAdID,
+                              std::set<Interaction, InteractionLessForImpressionRetreival> &setCommonRetrieval){
+
+
+    std::pair<std::multimap<size_t, size_t>::iterator, std::multimap<size_t, size_t>::iterator> iterRange;
+    iterRange = mapUserID2Index.equal_range(userID);
+
+    std::multimap<size_t, size_t>::iterator interactionIter = iterRange.first;
+    std::set<size_t>::iterator adIDIter = setCommonAdID.begin();
+
+    while((adIDIter!= setCommonAdID.end()) && (interactionIter != iterRange.second)){
+        if(vecInteractions[interactionIter->second].adID > (*adIDIter)){
+            ++adIDIter;
+        }else if(vecInteractions[interactionIter->second].adID < (*adIDIter)){
+            ++interactionIter;
+        }else{
+            setCommonRetrieval.insert(vecInteractions[interactionIter->second]);
+            ++interactionIter;
+        }
+    }
+
+}
+
 
 
 void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
@@ -149,6 +175,9 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
         }
     }
 
+
+//    findInteractionWithAdSet(vecInteractions, mapUserID2Index, userID_1, setCommonAdID, setCommonRetrieval);
+//    findInteractionWithAdSet(vecInteractions, mapUserID2Index, userID_2, setCommonAdID, setCommonRetrieval);
 
 
     {
