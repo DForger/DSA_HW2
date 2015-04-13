@@ -341,9 +341,9 @@ int main(int argc, char *argv[], char *envp[])
 
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
-    if(loadFileC(strFileAddress.c_str(), vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
-        return -1;
-    }
+//    if(loadFileC(strFileAddress.c_str(), vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
+//        return -1;
+//    }
 
     if(readFile(strFileAddress, vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
         return -1;
