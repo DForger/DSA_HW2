@@ -28,8 +28,7 @@ public:
         char *ptr = start;
         size_t value = 0;
         while(ptr != end){
-            value = value*10 +(*ptr - '0');
-            ++ptr;
+            value = value*10 +(*ptr++ - '0');
         }
         return value;
     }

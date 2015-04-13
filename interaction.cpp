@@ -1,6 +1,6 @@
 #include "interaction.h"
 
-Interaction::Interaction()     
+Interaction::Interaction()
 {
 
 }
@@ -109,13 +109,11 @@ void Interaction::init(char *start, char *end)
     short sCharCnt = 0;
     char *ptr = start;
     while(ptr != end){
-        if(*ptr == '\n'){
+        if(*ptr == '\t'){
             sTabPos[sTabCnt] = sCharCnt;
             ++sTabCnt;
-            ++sCharCnt;
-        }else{
-            ++sCharCnt;
         }
+        ++sCharCnt;
         ++ptr;
     }
     sTabPos[11] = sCharCnt;

@@ -62,9 +62,25 @@ int loadFileC(const char* fileName,
     FILE *file = fopen(fileName, "r");
     char line[256];
 
+    time_t t1, t2;
+    t1 = time(NULL);
+
+    std::cout<<"scan file with fgets\n";
     while(fgets(line, 256, file)){
+        int length = 0;
+        for(; length < 256; ++length){
+            if(line[length] == '\n'){
+                break;
+            }
+        }
 
     }
+
+    t2 = time(NULL);
+    std::cout<<"loading compeleted, used "<< t2-t1 << "sec \n";
+    std::cout.flush();
+    return 0;
+
 }
 
 int loadFile(const string &filename,
@@ -186,10 +202,13 @@ int readFile(const string &filename,
     nChrCnt = 0;
     ptr = static_cast<char*>(mapped);
 
+    vecInteractions.resize(nLineNum);
+
     t2 = time(NULL);
     std::cout << "line num " << nLineNum << " time used " << t2-t1 << "sec \n";
     std::cout.flush();
 
+    size_t nLineCnt = 0;
     while(1){
         int nEndPos = 0;
         while((nChrCnt < fileSize) && (ptr[nEndPos] != '\n')){
@@ -197,10 +216,15 @@ int readFile(const string &filename,
             ++nChrCnt;
         }
 
-        Interaction interaction(ptr, ptr+nEndPos);
-        vecInteractions.push_back(interaction);
-        mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
-        mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
+//        Interaction interaction(ptr, ptr+nEndPos);
+//        vecInteractions.push_back(interaction);
+//        mapUserID2Index.insert(std::pair<size_t, size_t>(interaction.userID, nCnt));
+//        mapAdID2Index.insert(std::pair<size_t, size_t>(interaction.adID, nCnt));
+
+        vecInteractions[nLineCnt].init(ptr, ptr+nEndPos);
+//        mapUserID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].userID, nCnt));
+//        mapAdID2Index.insert(std::pair<size_t, size_t>(vecInteractions[nLineCnt].adID, nCnt));
+
         ++nCnt;
         if(nCnt%1000000 == 0){
             t2 = time(NULL);
@@ -210,6 +234,7 @@ int readFile(const string &filename,
 
         ++nEndPos;
         ++nChrCnt;
+        ++nLineCnt;
 
         if(nChrCnt >= fileSize){
             break;
@@ -316,6 +341,10 @@ int main(int argc, char *argv[], char *envp[])
 
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
+    if(loadFileC(strFileAddress.c_str(), vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
+        return -1;
+    }
+
     if(readFile(strFileAddress, vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
         return -1;
     }
@@ -326,13 +355,13 @@ int main(int argc, char *argv[], char *envp[])
 
 
 
-    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
-    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-    RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
-    RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
-    std::cout.flush();
-    std::vector<std::vector<size_t> > cmdList;
+//    RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
+//    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+//    RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+//    RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+//    RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
+//    std::cout.flush();
+//    std::vector<std::vector<size_t> > cmdList;
 //    parseCommand(cmdList);
 
     return 0;
