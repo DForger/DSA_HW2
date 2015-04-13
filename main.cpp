@@ -15,7 +15,7 @@
 #include "interaction.h"
 #include "retrieval_method.h"
 
-//#define DEBUG
+#define DEBUG
 
 using namespace std;
 
@@ -258,9 +258,9 @@ int readFile(const string &filename,
         }
 
 #ifdef DEBUG
-        if(nCnt%1000000 == 0){
+        if(nLineCnt%1000000 == 0){
             t2 = time(NULL);
-            std::cout << (double)nCnt*100/k_totalLineNum << "% loaded. used time " << t2-t1 << "sec \n";
+            std::cout << (double)nLineCnt*100/nLineNum << "% loaded. used time " << t2-t1 << "sec \n";
             std::cout.flush();
         }
 #endif
@@ -368,7 +368,7 @@ void run(std::vector<std::vector<size_t> > &cmdList,
          std::vector<Interaction> &vecTotalInteractions,
          std::multimap<size_t, size_t> &mapUserID2Index,
          std::multimap<size_t, size_t> &mapAdID2Index,
-         std::map<size_t, std::set<size_t> > mapUserID2adIDSet){
+         std::map<size_t, std::set<size_t> > &mapUserID2adIDSet){
 
 
 
@@ -426,14 +426,13 @@ int main(int argc, char *argv[], char *envp[])
         return -1;
     }
 
-#ifdef DEUBG
+#ifdef DEBUG
     time_t t1, t2;
     t1 = time(NULL);
-#endif
 
 
 
-//    for(int i = 0; i < 400; ++i){
+    for(int i = 0; i < 400; ++i){
         RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
         RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
         RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
@@ -449,21 +448,21 @@ int main(int argc, char *argv[], char *envp[])
           RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
           RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
           RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,mapUserID2adIDSet, 6231938, 0,vecRetrievalInteractions);
-//    }
+    }
 
-
-
-#ifdef DEUBG
       t2 = time(NULL);
       std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
       std::cout.flush();
 #endif
 
+
+#ifndef DEBUG
     std::vector<std::vector<size_t> > cmdList;
     parseCommand(cmdList);
-
     run(cmdList, vecTotalInteractions, mapUserID2Index, mapAdID2Index, mapUserID2adIDSet);
+#endif
 
     return 0;
+
 }
 
