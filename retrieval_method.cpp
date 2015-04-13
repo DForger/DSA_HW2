@@ -141,13 +141,47 @@ void RetrievalForImpressed(const std::vector<Interaction> &vecInteractions,
     {
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter1;
         std::set<Interaction, InteractionLessForImpressionRetreival>::iterator iter2;
-        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
-            iter2 = setRetrievals_2.find(*iter1);
-            if(iter2 != setRetrievals_2.end()){
-                setCommonRetrieval.insert(*iter1);
+        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end();  ++iter1){
+            bool bFound = false;
+            for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
+                if(iter1->adID == iter2->adID){
+                    bFound = true;
+                    break;
+                }
+            }
+
+            if(!bFound){
+                setRetrievals_1.erase(iter1);
+            }
+        }
+
+        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
+            bool bFound = false;
+            for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
+                if(iter2->adID == iter1->adID){
+                    bFound = true;
+                    break;
+                }
+            }
+            if(!bFound){
                 setRetrievals_2.erase(iter2);
             }
         }
+
+//        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
+//            iter1 = setRetrievals_1.find(*iter2);
+//            if(iter1 != setRetrievals_1.end()){
+//                setCommonRetrieval.insert(*iter2);
+//            }
+//        }
+        for(iter1 = setRetrievals_1.begin(); iter1 != setRetrievals_1.end(); ++iter1){
+            setCommonRetrieval.insert(*iter1);
+        }
+
+        for(iter2 = setRetrievals_2.begin(); iter2 != setRetrievals_2.end(); ++iter2){
+            setCommonRetrieval.insert(*iter2);
+        }
+
     }
 
     //print result

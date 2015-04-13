@@ -25,6 +25,8 @@ const size_t k_profit = 3;
 const size_t k_quit = 4;
 const double k_thetaScale = 10000000;
 const size_t k_totalLineNum = 149639105;
+
+/*
 //int loadFile(const string &filename,
 //             std::vector<Interaction> &vecInteractions,
 //             std::multimap<size_t, size_t> &mapUserID2Index,
@@ -56,33 +58,34 @@ const size_t k_totalLineNum = 149639105;
 //    return 0;
 //}
 
-int loadFileC(const char* fileName,
-              std::vector<Interaction> &vecInteractions,
-              std::multimap<size_t, size_t> &mapUserID2Index,
-              std::multimap<size_t, size_t> &mapAdID2Index){
-    FILE *file = fopen(fileName, "r");
-    char line[256];
+//int loadFileC(const char* fileName,
+//              std::vector<Interaction> &vecInteractions,
+//              std::multimap<size_t, size_t> &mapUserID2Index,
+//              std::multimap<size_t, size_t> &mapAdID2Index){
+//    FILE *file = fopen(fileName, "r");
+//    char line[256];
 
-    time_t t1, t2;
-    t1 = time(NULL);
+//    time_t t1, t2;
+//    t1 = time(NULL);
 
-    std::cout<<"scan file with fgets\n";
-    while(fgets(line, 256, file)){
-        int length = 0;
-        for(; length < 256; ++length){
-            if(line[length] == '\n'){
-                break;
-            }
-        }
+//    std::cout<<"scan file with fgets\n";
+//    while(fgets(line, 256, file)){
+//        int length = 0;
+//        for(; length < 256; ++length){
+//            if(line[length] == '\n'){
+//                break;
+//            }
+//        }
 
-    }
+//    }
 
-    t2 = time(NULL);
-    std::cout<<"loading compeleted, used "<< t2-t1 << "sec \n";
-    std::cout.flush();
-    return 0;
+//    t2 = time(NULL);
+//    std::cout<<"loading compeleted, used "<< t2-t1 << "sec \n";
+//    std::cout.flush();
+//    return 0;
 
-}
+//}
+*/
 
 int loadFile(const string &filename,
              std::vector<Interaction> &vecInteractions,
@@ -265,7 +268,6 @@ int readFile(const string &filename,
 }
 
 
-
 void parseCommand(std::vector<std::vector<size_t> > &cmdList){
     while(1){
         string cmd;
@@ -313,18 +315,17 @@ void parseCommand(std::vector<std::vector<size_t> > &cmdList){
             break;
         }
 
-        for(int i = 0; i < cmdParam.size(); ++i){
-            std::cout<<cmdParam[i]<<" ";
-        }
-        std::cout<<std::endl;
-        std::cout.flush();
+//        for(int i = 0; i < cmdParam.size(); ++i){
+//            std::cout<<cmdParam[i]<<" ";
+//        }
+//        std::cout<<std::endl;
+//        std::cout.flush();
 
         if(!cmdParam.empty()){
             cmdList.push_back(cmdParam);
         }
     }
 }
-
 
 
 void run(std::vector<std::vector<size_t> > &cmdList,
@@ -372,46 +373,43 @@ int main(int argc, char *argv[], char *envp[])
 
     std::cout <<"the input argument is "<< strFileAddress << std::endl;
 
-//    if(loadFileC(strFileAddress.c_str(), vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
-//        return -1;
-//    }
 
     if(readFile(strFileAddress, vecTotalInteractions, mapUserID2Index, mapAdID2Index)){
         return -1;
     }
 
-//    time_t t1, t2;
-//    t1 = time(NULL);
+    time_t t1, t2;
+    t1 = time(NULL);
 
-    for(int i = 0; i < 400; ++i){
-//        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
-////        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-//        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
-//        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
+//    for(int i = 0; i < 400; ++i){
+////        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560710,4165614,2,2,clickImpressionPair);
+//////        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+////        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+////        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,490234, 372875,vecRetrievalInteractions);
+////        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,7686695, 0.0001);
 
 
-        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
-        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
-        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
-        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231944, 490234,vecRetrievalInteractions);
-    }
+//        RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 490234, setAdIDQueryIDPair);
+//        RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,490234,21560664,2255103,2,2,clickImpressionPair);
+//        RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21375650, 0.5);
+//        RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231944, 490234,vecRetrievalInteractions);
+//    }
 
     //clicked 12565
     //get 6231937 21459920 2416 2 2
     //profit 21459920 0.1
     //impressed 6231938 0
     //quit
-//      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
-//      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
-//      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
-//      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231938, 0,vecRetrievalInteractions);
+      RetrievalForClicked(vecTotalInteractions, mapUserID2Index, 12565, setAdIDQueryIDPair);
+      RetrievalForClickedAndImpression(vecTotalInteractions, mapUserID2Index,6231937,21459920,2416,2,2,clickImpressionPair);
+      RetrievalForProfit(vecTotalInteractions, mapAdID2Index,21459920, 0.1);
+      RetrievalForImpressed(vecTotalInteractions, mapUserID2Index,6231938, 0,vecRetrievalInteractions);
 
 
 
-//    t2 = time(NULL);
-//    std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
-//    std::cout.flush();
+    t2 = time(NULL);
+    std::cout<<"process 400 cmd used "<<t2-t1<<" sec\n";
+    std::cout.flush();
 
     std::vector<std::vector<size_t> > cmdList;
     parseCommand(cmdList);

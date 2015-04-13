@@ -51,11 +51,6 @@ struct InteractionLessForImpressionRetreival{
             return false;
         }
 
-//        if(l.displayURL < r.displayURL){
-//            return true;
-//        }else if(l.displayURL > r.displayURL){
-//            return false;
-//        }
         if(l.displayURL_H < r.displayURL_H){
             return true;
         }else if(l.displayURL_H > r.displayURL_H){
