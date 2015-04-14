@@ -9,7 +9,6 @@ using namespace std;
 
 struct Interaction
 {
-public:
     Interaction();
 
     Interaction( std::istringstream &ss);
@@ -20,7 +19,7 @@ public:
 
     Interaction& operator=(const Interaction &rhs);
 
-    bool operator==(const Interaction &rhs);
+    bool operator==(const Interaction &rhs) const;
 
     void init(char *start, char *end);
 
@@ -58,7 +57,6 @@ public:
     size_t titleID;
     size_t descriptionID;
     size_t userID;
-
 };
 
 #endif // INTERACTION_H

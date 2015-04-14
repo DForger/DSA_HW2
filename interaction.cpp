@@ -81,7 +81,7 @@ Interaction &Interaction::operator=(const Interaction &rhs){
     return *this;
 }
 
-bool Interaction::operator==(const Interaction &rhs){
+bool Interaction::operator==(const Interaction &rhs) const{
 //    if(this->displayURL != rhs.displayURL){
 //        return false;
 //    }
